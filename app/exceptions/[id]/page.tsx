@@ -506,7 +506,7 @@ export default function ExceptionDetailPage() {
             </Card>
 
             {/* Escalation Timeline */}
-            {exception.escalations.length > 0 && (
+            {(exception.escalations || []).length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -516,11 +516,11 @@ export default function ExceptionDetailPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {exception.escalations.map((esc, idx) => (
+                    {(exception.escalations || []).map((esc, idx) => (
                       <div key={esc.id} className="flex gap-4">
                         <div className="flex flex-col items-center">
                           <div className={`h-3 w-3 rounded-full ${getEscalationColor(esc.level)}`} />
-                          {idx < exception.escalations.length - 1 && (
+                          {idx < (exception.escalations || []).length - 1 && (
                             <div className="w-0.5 h-full bg-slate-200 mt-1" />
                           )}
                         </div>
@@ -572,7 +572,7 @@ export default function ExceptionDetailPage() {
 
                 {/* Activity Timeline */}
                 <div className="space-y-4">
-                  {exception.activities.map((activity, idx) => (
+                  {(exception.activities || []).map((activity, idx) => (
                     <div key={activity.id} className="flex gap-3">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={activity.user.avatar} />
@@ -691,11 +691,11 @@ export default function ExceptionDetailPage() {
               <CardContent className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-sm text-slate-500">Activities</span>
-                  <span className="font-medium">{exception.activities.length}</span>
+                  <span className="font-medium">{(exception.activities || []).length}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-slate-500">Escalations</span>
-                  <span className="font-medium">{exception.escalations.length}</span>
+                  <span className="font-medium">{(exception.escalations || []).length}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-slate-500">Days Open</span>

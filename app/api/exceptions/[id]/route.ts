@@ -150,7 +150,8 @@ export async function PATCH(
             id: true,
             name: true,
             avatar: true,
-            role: true
+            role: true,
+            email: true
           }
         },
         createdBy: {
@@ -163,6 +164,20 @@ export async function PATCH(
         escalations: {
           orderBy: {
             escalatedAt: 'desc'
+          }
+        },
+        activities: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true
+              }
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
           }
         }
       }
