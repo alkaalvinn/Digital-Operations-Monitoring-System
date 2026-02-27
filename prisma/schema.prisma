@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  MANAGEMENT
+  OPERATIONAL
+  SUPERVISOR
+}
+
+enum ExceptionStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING
+  ESCALATED
+  RESOLVED
+  CLOSED
+}
+
+enum ExceptionSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum EscalationLevel {
+  LEVEL_1
+  LEVEL_2
+  LEVEL_3
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      UserRole
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  assignedExceptions Exception[] @relation("AssignedTo")
+  createdExceptions  Exception[] @relation("CreatedBy")
+  activities         ActivityLog[]
+}
+
+model Exception {
+  id               String            @id @default(cuid())
+  title            String
+  description      String
+  category         String
+  severity         ExceptionSeverity
+  impactLevel      Int
+  status           ExceptionStatus   @default(OPEN)
+  slaDeadline      DateTime
+  escalationLevel  EscalationLevel   @default(LEVEL_1)
+  resolvedAt       DateTime?
+  resolutionNotes  String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  assignedToId String?
+  assignedTo   User?               @relation("AssignedTo", fields: [assignedToId], references: [id])
+
+  createdById String
+  createdBy   User                 @relation("CreatedBy", fields: [createdById], references: [id])
+
+  escalations  Escalation[]
+  activities   ActivityLog[]
+  kpiMetrics   KPIMetric[]
+}
+
+model Escalation {
+  id           String          @id @default(cuid())
+  level        EscalationLevel
+  reason       String
+  escalatedAt  DateTime        @default(now())
+  escalatedTo  String
+  notes        String?
+
+  exceptionId String
+  exception   Exception       @relation(fields: [exceptionId], references: [id], onDelete: Cascade)
+
+  @@index([exceptionId])
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  action      String
+  description String
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  exceptionId String
+  exception   Exception @relation(fields: [exceptionId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User     @relation(fields: [userId], references: [id])
+
+  @@index([exceptionId])
+  @@index([userId])
+}
+
+model KPIMetric {
+  id               String   @id @default(cuid())
+  metricType       String
+  metricValue      Float
+  recordedAt       DateTime @default(now())
+
+  exceptionId String?
+  exception   Exception? @relation(fields: [exceptionId], references: [id])
+
+  @@index([exceptionId])
+  @@index([metricType])
+}
