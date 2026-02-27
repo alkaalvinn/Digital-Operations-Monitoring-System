@@ -1,263 +1,180 @@
-# 🎯 ROLE
+# Digital Operations Monitoring System
 
-You are a senior product engineer and UX-focused system architect.
+A comprehensive enterprise web application for monitoring operational exceptions, tracking KPIs, and managing incident escalation workflows.
 
-Build a **Digital Operations Monitoring System** that helps management monitor:
+## Features
 
-* Operational exceptions
-* Performance KPI
-* Incident management
-* Structured escalation workflow
+- **Role-Based Dashboards**
+  - **Management View**: KPI summaries, trend analysis, critical exceptions visibility
+  - **Supervisor View**: Escalation monitoring, SLA breach alerts, team workload
+  - **Operational View**: Assigned exceptions, SLA countdown, status management
 
-This is an enterprise internal web application.
+- **Exception Management**
+  - Create, view, and manage operational exceptions
+  - Status tracking (Open, In Progress, Waiting, Escalated, Resolved, Closed)
+  - Severity levels (Low, Medium, High, Critical)
+  - Impact level assessment
 
----
+- **Escalation Logic**
+  - Automatic escalation on SLA breach
+  - Critical severity immediate escalation
+  - 3-level escalation hierarchy (Operational → Supervisor → Department Head)
+
+- **Activity Logging**
+  - Complete audit trail for each exception
+  - Comment system for collaboration
+  - Status change history
 
-## 🧠 BUSINESS CONTEXT
+- **SLA Tracking**
+  - Real-time countdown timers
+  - Visual warnings for approaching deadlines
+  - Breach notifications
 
-Current Problems:
+## Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS, Shadcn UI
+- **Charts**: Recharts
+- **Backend**: Next.js API Routes
+- **Database**: PostgreSQL with Prisma ORM
 
-* Data scattered across multiple sources
-* Management cannot get real-time insight
-* No structured exception follow-up
-* No escalation management model
+## Setup Instructions
 
-Goal:
-Create a centralized monitoring & operational control center.
+### Prerequisites
 
----
+- Node.js 18+ installed
+- PostgreSQL database running locally or accessible
 
-## 👥 USER ROLES
+### 1. Install Dependencies
 
-### 1️⃣ Management
+```bash
+npm install
+```
 
-Needs:
+### 2. Configure Database
 
-* Quick KPI summary
-* Critical exceptions visibility
-* Escalation overview
-* Trend analysis
+Create a `.env` file in the root directory:
 
-### 2️⃣ Operational Team
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/monitoring_dashboard?schema=public"
+```
 
-Needs:
+Update the connection string to match your PostgreSQL configuration.
 
-* Exception list
-* Follow-up workflow
-* SLA tracking
-* Comment & activity log
+### 3. Initialize Database
 
-### 3️⃣ Supervisor
+```bash
+# Generate Prisma client
+npx prisma generate
 
-Needs:
+# Run migrations to create tables
+npx prisma db push
 
-* Escalation monitoring
-* SLA breach alerts
-* Workload overview
-* Performance metrics
+# Seed with demo data
+npm run seed
+```
 
-Implement role-based access control.
+### 4. Run Development Server
 
----
+```bash
+npm run dev
+```
 
-## 🏗 CORE FEATURES
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### 1️⃣ Dashboard (Role-Based)
+## Demo Accounts
 
-Management View:
+The seed script creates the following test accounts (password: `password123`):
 
-* KPI Cards (Open Exceptions, SLA Compliance %, Escalation Rate, Avg Resolution Time)
-* Trend chart (line chart)
-* Critical exceptions widget
-* Escalation summary panel
+| Role | Email | Access |
+|------|-------|--------|
+| Management | management@example.com | Full KPI dashboard, all exceptions |
+| Supervisor | supervisor@example.com | Escalation monitoring, team workload |
+| Operational 1 | op1@example.com | Assigned exceptions only |
+| Operational 2 | op2@example.com | Assigned exceptions only |
 
-Operational View:
+## Project Structure
 
-* Assigned exceptions
-* SLA countdown timer
-* Status filter (Open, In Progress, Escalated, Closed)
-
-Supervisor View:
-
-* Escalated incidents list
-* SLA breach alert
-* Team workload chart
-
----
-
-### 2️⃣ Exception Management Module
-
-Fields:
-
-* Exception ID
-* Title
-* Description
-* Category
-* Severity (Low, Medium, High, Critical)
-* Impact level
-* Assigned To
-* Status
-* SLA deadline
-* Created at
-* Escalation level
-
-Statuses:
-
-* Open
-* In Progress
-* Waiting
-* Escalated
-* Resolved
-* Closed
-
----
-
-### 3️⃣ Escalation Logic
-
-Implement automatic escalation logic:
-
-* If SLA breached → escalate to Supervisor
-* If Severity = Critical → immediate Level 2 escalation
-* If unresolved after 24h → escalate to Level 3
-
-Escalation Levels:
-
-* Level 1 → Operational
-* Level 2 → Supervisor
-* Level 3 → Department Head
-
-Show:
-
-* Escalation badge
-* Escalation timeline
-* Escalation history log
-
----
-
-### 4️⃣ Incident Activity Log
-
-Each exception must have:
-
-* Comment system
-* Activity timeline
-* Status change log
-* Escalation history
-* Resolution notes
-
----
-
-## 📊 DATA MODEL
-
-Design normalized database schema including:
-
-Tables:
-
-* users
-* roles
-* exceptions
-* escalations
-* kpi_metrics
-* activity_logs
-
-Include foreign key relationships.
-
----
-
-## 🎨 UI/UX REQUIREMENTS
-
-Design a clean enterprise-style UI:
-
-* Minimalist layout
-* Sidebar navigation
-* Top summary KPI cards
-* Data-heavy but readable
-* High contrast alerts
-
-Color logic:
-
-* Red → Critical
-* Yellow → Warning
-* Green → Normal
-* Blue → Informational
-
-Use:
-
-* Responsive layout
-* Modern dashboard design
-* Clear visual hierarchy
-* Table with filtering & sorting
-* Drawer or modal for detail view
-
----
-
-## 🛠 TECH STACK
-
-Use:
-
-Frontend:
-
-* Next.js (App Router)
-* TypeScript
-* Tailwind CSS
-* Shadcn UI
-* Recharts (for charts)
-
-Backend:
-
-* Next.js API routes OR Express
-* PostgreSQL
-* Prisma ORM
-
-Authentication:
-
-* Role-based authentication
-
-Include:
-
-* Dummy seed data
-* Realistic mock data
-* API endpoints
-* Clean folder structure
-
----
-
-## 🔄 WORKFLOW
-
-Exception lifecycle:
-
-Detected → Assigned → In Progress → Resolved → Closed
-↓
-Escalated (if SLA breach or critical)
-
----
-
-## 🧪 ADDITIONAL
-
-Add:
-
-* Search & filter
-* Sort by SLA deadline
-* KPI auto recalculation
-* Real-time SLA countdown
-* Simple analytics page
-
----
-
-## 🧩 DELIVERABLE
-
-Generate:
-
-* Full project structure
-* Database schema
-* API routes
-* UI pages
-* Seed script
-* Dummy users for each role
-* README setup instructions
-
----
-
-> Generate full production-ready code.
-> No explanation needed.
-> Provide working runnable application.
-> Prioritize clean architecture and scalability.
+```
+├── app/
+│   ├── api/                 # API routes
+│   │   ├── auth/           # Authentication endpoints
+│   │   ├── exceptions/     # Exception CRUD operations
+│   │   ├── kpis/           # KPI calculations
+│   │   └── users/          # User management
+│   ├── dashboard/          # Main dashboard (role-based)
+│   ├── exceptions/[id]/    # Exception detail view
+│   ├── login/              # Login page
+│   └── layout.tsx          # Root layout
+├── components/
+│   └── ui/                 # Shadcn UI components
+├── contexts/
+│   └── auth-context.tsx    # Authentication context
+├── hooks/
+│   └── use-toast.ts        # Toast notification hook
+├── lib/
+│   ├── prisma.ts           # Prisma client singleton
+│   └── utils.ts            # Utility functions
+├── prisma/
+│   ├── schema.prisma       # Database schema
+│   └── seed.ts             # Seed script
+└── public/                 # Static assets
+```
+
+## Database Schema
+
+### Users
+- id, email, name, password, role, avatar
+- Roles: MANAGEMENT, OPERATIONAL, SUPERVISOR
+
+### Exceptions
+- id, title, description, category, severity, impactLevel
+- status, slaDeadline, escalationLevel
+- assignedTo, createdBy, resolvedAt, resolutionNotes
+
+### Escalations
+- id, exceptionId, level, reason, escalatedAt, escalatedTo, notes
+
+### Activity Logs
+- id, exceptionId, userId, action, description, metadata, createdAt
+
+### KPI Metrics
+- id, exceptionId, metricType, metricValue, recordedAt
+
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/login` - User login
+
+### Exceptions
+- `GET /api/exceptions` - List exceptions (with filters)
+- `POST /api/exceptions` - Create new exception
+- `GET /api/exceptions/[id]` - Get exception details
+- `PATCH /api/exceptions/[id]` - Update exception
+- `DELETE /api/exceptions/[id]` - Delete exception
+- `GET /api/exceptions/[id]/activities` - Get activity log
+- `POST /api/exceptions/[id]/activities` - Add activity/comment
+
+### Users
+- `GET /api/users` - List users
+- `POST /api/users` - Create user
+
+### KPIs
+- `GET /api/kpis` - Get dashboard metrics
+
+## Escalation Rules
+
+1. **SLA Breach** → Escalate to Level 2 (Supervisor)
+2. **Critical Severity** → Immediate Level 2 escalation
+3. **Unresolved after 24h at Level 2** → Escalate to Level 3 (Department Head)
+
+## Building for Production
+
+```bash
+npm run build
+npm start
+```
+
+## License
+
+MIT
